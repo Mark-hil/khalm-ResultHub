@@ -1,0 +1,6 @@
+<p>User: {{ user.name }}</p>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Test Result</button>
+</form>

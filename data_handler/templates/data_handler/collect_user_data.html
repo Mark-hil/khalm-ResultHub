@@ -1,0 +1,92 @@
+{% extends "data_handler/base.html" %}
+
+{% block title %}Enter User Data{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="mb-4 text-center text-primary">Enter User Data</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- User Information Section -->
+            <fieldset class="border rounded p-3 mb-4">
+                <legend class="float-none w-auto px-3 fw-bold text-secondary">User Information</legend>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Enter full name" required>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Age</label>
+                        <input type="number" name="age" class="form-control" placeholder="Age" required>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Sex</label>
+                        <select name="sex" class="form-select" required>
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                           
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Class</label>
+                        <input type="text" name="user_class" class="form-control" placeholder="Enter class" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Lab Serial No.</label>
+                        <input type="text" name="lab_serial" class="form-control" placeholder="Enter lab serial number" required>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Test Results Section -->
+            <fieldset class="border rounded p-3 mb-4">
+                <legend class="float-none w-auto px-3 fw-bold text-secondary">Test Results</legend>
+                
+                <div id="test-results-container">
+                    <div class="test-result input-group mb-3">
+                        <input type="text" name="test_name[]" class="form-control" placeholder="Test Name" required>
+                        <input type="text" name="result[]" class="form-control" placeholder="Result" required>
+                        <button type="button" class="btn btn-danger" onclick="removeTestRow(this)">Remove</button>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary mt-2" onclick="addTestRow()">+ Add Another Test</button>
+            </fieldset>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-success px-4 py-2">Save Data</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript for Adding/Removing Test Rows -->
+<script>
+    function addTestRow() {
+        const container = document.getElementById("test-results-container");
+        const newRow = document.createElement("div");
+        newRow.classList.add("test-result", "input-group", "mb-3");
+        newRow.innerHTML = `
+            <input type="text" name="test_name[]" class="form-control" placeholder="Test Name" required>
+            <input type="text" name="result[]" class="form-control" placeholder="Result" required>
+            <button type="button" class="btn btn-danger" onclick="removeTestRow(this)">Remove</button>
+        `;
+        container.appendChild(newRow);
+    }
+
+    function removeTestRow(button) {
+        button.parentElement.remove();
+    }
+</script>
+
+{% endblock %}

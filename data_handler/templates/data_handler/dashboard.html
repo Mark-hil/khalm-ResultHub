@@ -1,0 +1,132 @@
+{% extends "data_handler/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-primary text-center mb-4">📊 Application Dashboard</h2>
+
+    <!-- Summary Cards (Equal Height) -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 bg-primary text-white text-center p-4 h-100 d-flex flex-column justify-content-center align-items-center">
+                <h5>Total Users</h5>
+                <h2 class="fw-bold">{{ total_users }}</h2>
+                <i class="fas fa-users fa-3x mt-3"></i>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 bg-warning text-white text-center p-4 h-100 d-flex flex-column justify-content-center align-items-center">
+                <h5>Total Tests Conducted</h5>
+                <h2 class="fw-bold">{{ total_tests }}</h2>
+                <i class="fas fa-flask fa-3x mt-3"></i>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 bg-success text-white text-center p-4 h-100 d-flex flex-column justify-content-center align-items-center">
+                <h5>Reports Generated</h5>
+                <h2 class="fw-bold">{{ total_reports }}</h2>
+                <i class="fas fa-file-alt fa-3x mt-3"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mt-5 g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h5 class="text-center">User Distribution by Class</h5>
+                <canvas id="classChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h5 class="text-center">Gender Distribution</h5>
+                <canvas id="genderChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h5 class="text-center">Age Distribution</h5>
+                <canvas id="ageChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h5 class="text-center">Most Common Tests</h5>
+                <canvas id="testChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="row mt-5 g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h5>Recent Users</h5>
+                <ul class="list-group list-group-flush">
+                    {% for user in recent_users %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>{{ user.name }}</span>
+                            <span class="badge bg-info">{{ user.user_class }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h5>Recent Test Results</h5>
+                <ul class="list-group list-group-flush">
+                    {% for test in recent_tests %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>{{ test.test_name }}</span>
+                            <span class="badge bg-danger">{{ test.result }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js & FontAwesome for Icons -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script>
+    function createChart(canvasId, type, labels, data, colors) {
+        new Chart(document.getElementById(canvasId), {
+            type: type,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: canvasId,
+                    data: data,
+                    backgroundColor: colors,
+                    borderColor: 'rgba(0, 0, 0, 0.1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+
+    createChart('classChart', 'bar', {{ class_labels|safe }}, {{ class_values|safe }}, ['#4B77BE', '#22A7F0', '#1E8BC3']);
+    createChart('genderChart', 'pie', {{ gender_labels|safe }}, {{ gender_values|safe }}, ['#FF6384', '#36A2EB']);
+    createChart('ageChart', 'bar', {{ age_labels|safe }}, {{ age_values|safe }}, ['#FFA500', '#FF6347', '#4682B4', '#32CD32']);
+    createChart('testChart', 'doughnut', {{ test_labels|safe }}, {{ test_values|safe }}, ['#FF6384', '#36A2EB', '#FFCE56']);
+</script>
+
+{% endblock %}
